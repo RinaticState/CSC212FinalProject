@@ -1,4 +1,4 @@
-package edu.smith.cs.csc212.p4;
+package edu.smith.cs.csc212.finalproject;
 
 import java.util.ArrayList;
 import java.util.List;

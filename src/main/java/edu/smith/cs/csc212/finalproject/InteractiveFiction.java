@@ -1,4 +1,4 @@
-package edu.smith.cs.csc212.p4;
+package edu.smith.cs.csc212.finalproject;
 
 import java.util.HashSet;
 import java.util.List;
@@ -23,13 +23,12 @@ public class InteractiveFiction {
 		
 		// This is the current location of the player (initialize as start).
 		// Maybe we'll expand this to a Player object.
-		String place = game.getStart();
+		Place here = game.getStart();
 
 		// Play the game until quitting.
 		// This is too hard to express here, so we just use an infinite loop with breaks.
 		while (true) {
 			// Print the description of where you are.
-			Place here = game.getPlace(place);
 			System.out.println(here.getDescription());
 
 			// Game over after print!
@@ -38,14 +37,20 @@ public class InteractiveFiction {
 			}
 
 			// Show a user the ways out of this place.
-			List<Exit> exits = here.getExits();
-			for (Exit e : exits) {
-				System.out.println(" - " + e.getDescription());
+			List<Graph.Edge<Place, Exit>> exits = here.getExits();
+			for (Graph.Edge<Place, Exit> e : exits) {
+				System.out.println(" - " + e.edgeValue.getDescription());
 			}
 
-			// Figure out what the user wants to do, for now, only "quit" is special.
+			// Figure out what the user wants to do
 			List<String> action = input.getUserWords(">");
 			if (action.contains("quit")) {
+				if (input.confirm("Are you sure you want to quit?")) {
+					break;
+				} else {
+					continue;
+				}
+			} else if (action.contains("q")) {
 				if (input.confirm("Are you sure you want to quit?")) {
 					break;
 				} else {
@@ -54,9 +59,9 @@ public class InteractiveFiction {
 			}
 
 			// See if what the user typed matches any exits.
-			HashSet<Exit> matches = new HashSet<>();
-			for (Exit e : exits) {
-				List<String> keywords = WordSplitter.splitTextToWords(e.getDescription());
+			HashSet<Graph.Edge<Place, Exit>> matches = new HashSet<>();
+			for (Graph.Edge<Place, Exit> e : exits) {
+				List<String> keywords = WordSplitter.splitTextToWords(e.edgeValue.getDescription());
 				for (String a : action) {
 					if (keywords.contains(a)) {
 						matches.add(e);
@@ -67,14 +72,14 @@ public class InteractiveFiction {
 			
 			// If they typed a unique word, they want to go there.
 			if (matches.size() == 1) {
-				Exit e = matches.iterator().next();
-				place = e.getTarget();
+				Graph.Edge<Place,Exit> e = matches.iterator().next();
+				here = e.nodeKey;
 				continue;
 			} else if (matches.size() >= 2) {
 				// If not, express our confusion.
 				System.out.println("I can't tell which you mean:");
-				for (Exit e : matches) {
-					System.out.println(" - " + e.getDescription());
+				for (Graph.Edge<Place, Exit> e : matches) {
+					System.out.println(" - " + e.edgeValue.getDescription());
 				}
 				continue;
 			} else {

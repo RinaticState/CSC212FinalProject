@@ -1,4 +1,4 @@
-package edu.smith.cs.csc212.p4;
+package edu.smith.cs.csc212.finalproject;
 
 import java.io.BufferedReader;
 import java.io.File;

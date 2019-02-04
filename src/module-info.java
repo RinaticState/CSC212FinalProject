@@ -1,0 +1,9 @@
+/**
+ * 
+ */
+/**
+ * @author Ayami
+ *
+ */
+module graph {
+}
